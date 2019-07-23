@@ -54,7 +54,7 @@ function start(){
         console.log("***********value selected***********",valueSelected);
         console.log("*******addressSelected*********",addressSelected);
         
-       const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+        const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
 
         Contract = web3.eth.contract(abi)
         
