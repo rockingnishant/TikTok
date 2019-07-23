@@ -10,7 +10,8 @@ start()
 // In the start we get the initial data needed to get the contract address
 async function start() {
     window.addEventListener('load', () => {
-        socket = io("localhost:4000")
+       // socket = io("localhost:4000")
+        socket = io("https://1981c802.ngrok.io")
         setListeners()
     })
 }

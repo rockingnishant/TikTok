@@ -13,7 +13,8 @@ let contractInstance
 let socket
 start()
 function start(){
-    socket = io("localhost:4000")
+   // socket = io("localhost:4000")
+    socket = io("https://1981c802.ngrok.io")
     socket.on('start-game', redirectToGame)
 
     document.querySelector('#new-game').addEventListener('click',()=>{
