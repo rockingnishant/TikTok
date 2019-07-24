@@ -2,7 +2,7 @@ let activeDice = 0
 let game = {}
 let isThisPlayer1 = false
 let isThisPlayer2 = false
-let sequence = 1,
+let sequence = 1
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
 
 start()
@@ -10,8 +10,8 @@ start()
 // In the start we get the initial data needed to get the contract address
 async function start() {
     window.addEventListener('load', () => {
-       // socket = io("localhost:4000")
-        socket = io("https://1981c802.ngrok.io")
+        socket = io("localhost:4000")
+       // socket = io("https://1981c802.ngrok.io")
         setListeners()
     })
 }
@@ -34,7 +34,9 @@ function setListeners() {
         game = gameData
 
         // Who's this?
-        if (game.addressPlayer1 == web3.eth.accounts[0]) isThisPlayer1 = true
+        if (game.addressPlayer1 == web3.eth.accounts[0]){
+            isThisPlayer1 = true
+        } 
         else isThisPlayer2 = true
 
         // Show some game information
@@ -124,8 +126,10 @@ async function placeBet(bet) {
     }
 
     if (isThisPlayer1) {
+        console.log("player1 placing bet.............");
         socket.emit('signed-message-player-1', data)
     } else {
+        console.log("player2 placing bet.............");
         socket.emit('signed-message-player-2', data)
     }
 
@@ -145,12 +149,23 @@ function generateHash(nonce, call, bet, balance, sequence) {
 function signMessage(hash) {
     console.log("******signMessage*************");
     return new Promise((resolve, reject) => {
-        web3.personal.sign(hash, web3.eth.accounts[0], (err, result) => {
+    let account="";
+     if(isThisPlayer1){
+        account=web3.eth.accounts[0]
+     }else{
+        account=web3.eth.accounts[1]
+     }
+     console.log("*********** signing with this account************",account);
+
+     web3.eth.sign(account,hash, (err, result) => {
             if (err) {
                 console.log("Error in signing hash***********", err);
                 return reject(err)
+            }else{
+                console.log("Suuceesfully signed---------");
+                resolve(result)    
             }
-            resolve(result)
+           
         })
     })
 }

@@ -76,7 +76,9 @@ async function start() {
 
         socket.on('setup-game', data => {
             console.log('4. Received setup-game')
+            
             if(data.address == game.addressPlayer1) {
+              
                 game.socketPlayer1 = data.socket
             } else {
                 game.socketPlayer2 = data.socket

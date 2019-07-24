@@ -13,8 +13,8 @@ let contractInstance
 let socket
 start()
 function start(){
-   // socket = io("localhost:4000")
-    socket = io("https://1981c802.ngrok.io")
+    socket = io("localhost:4000")
+    //socket = io("https://1981c802.ngrok.io")
     socket.on('start-game', redirectToGame)
 
     document.querySelector('#new-game').addEventListener('click',()=>{
@@ -56,6 +56,8 @@ function start(){
         console.log("*******addressSelected*********",addressSelected);
         
         const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+        //const web3 = new Web3(Web3.givenProvider || 'ws://some.local-or-remote.node:8546');
+
 
         Contract = web3.eth.contract(abi)
         
@@ -63,14 +65,13 @@ function start(){
         if(addressSelected.length === 0) {
             let balance = web3.eth.getBalance(web3.eth.accounts[0]);
 
-            console.log("inside if block");
             console.log("web3.eth.accounts[0]",web3.eth.accounts[0]);
-            console.log("web3.eth.coinbase",web3.eth.coinbase);
+         
             console.log("balance**********",balance);
-            console.log("***********socket.id**********",socket.id);
+           
 
            game.escrowPlayer1 = web3.toWei(valueSelected)
-           game.balancePlayer1 = game.escrowPlayer1
+           game.balancePlayer1 = balance
            game.addressPlayer1 = web3.eth.accounts[0]
            game.socketPlayer1 = socket.id
 
@@ -102,19 +103,21 @@ function start(){
               
             })
         } else {
+
+            let balance = web3.eth.getBalance(web3.eth.accounts[1]);
             let interval
-            console.log("**********8inside else selector*************");
+            console.log("**********Second player balance2r*************",balance);
             contractInstance = Contract.at(addressSelected)
-            console.log("-------------inside else selector---------------");
+            console.log("-------------Second player connect with this account---------------",web3.eth.accounts[1]);
             game.contractAddress = addressSelected
             game.escrowPlayer2 = web3.toWei(valueSelected)
-            game.balancePlayer2 = game.escrowPlayer2
-            game.addressPlayer2 = web3.eth.accounts[0]
+            game.balancePlayer2 = balance
+            game.addressPlayer2 = web3.eth.accounts[1]
             game.socketPlayer2 = socket.id
 
             contractInstance.setupPlayer2({
                 value: web3.toWei(valueSelected),
-                from:web3.eth.accounts[0],
+                from:web3.eth.accounts[1],
                 gas: 4712388,
                 gasPrice: 100000000000
             }, (err, result) => {
