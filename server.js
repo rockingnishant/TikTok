@@ -78,9 +78,10 @@ async function start() {
             console.log('4. Received setup-game')
             
             if(data.address == game.addressPlayer1) {
-              
+              console.log("setup-game-1");
                 game.socketPlayer1 = data.socket
             } else {
+                console.log("setup-game-2");
                 game.socketPlayer2 = data.socket
             }
 
@@ -89,10 +90,14 @@ async function start() {
         })
 
         socket.on('signed-message-player-1', message => {
+            console.log("On Server :Inside signed-message-player-1");
             if(message.sender != game.addressPlayer1) {
+                console.log("message.sender != game.addressPlayer1");
                 return io.to(game.socketPlayer1).emit('error', 'The received address of the first player is invalid')
             }
             const isValid = verifyMessage(message.signedMessage, message.nonce, message.call, message.bet, game.balancePlayer1, message.sequence, game.addressPlayer1)
+            console.log("****isValid*****",isValid);
+
             if(!isValid) return io.to(game.socketPlayer1).emit('error', 'The received message is not valid, generate a new one again')
 
             game.signedMessage1 = message.signedMessage
@@ -119,6 +124,8 @@ async function start() {
                 }
                 io.emit('received-both-messages', game)
                 game = resetGame(game)
+            }else{
+             console.log("");
             }
         })
 
@@ -181,7 +188,7 @@ function resetGame(game) {
 
 // Checks that the message given by the player is valid to continue playing and to reveal the results
 function verifyMessage(signedMessage, nonce, call, bet, balance, sequence, playerAddress) {
-    console.log("verifyMessage");
+    console.log("inside verifyMessage");
 	const hash = generateHash(nonce, call, bet, balance, sequence)
 	const message = ethereumjs.soliditySHA3(
 		['string', 'bytes32'],

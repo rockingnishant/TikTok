@@ -115,6 +115,14 @@ async function placeBet(bet) {
     const hash = generateHash(nonce, activeDice, bet, getGameBalance(), sequence)
     console.log("generated hash is--------", hash);
     const signedMessage = await signMessage(hash)
+
+    let account="";
+    if(isThisPlayer1){
+       account=web3.eth.accounts[0]
+    }else{
+       account=web3.eth.accounts[1]
+    }
+
     //It is data going to server
     let data = {
         signedMessage: signedMessage,
@@ -122,11 +130,11 @@ async function placeBet(bet) {
         call: activeDice,
         bet: bet,
         sequence: sequence,
-        sender: web3.eth.accounts[0]
+        sender: account
     }
 
     if (isThisPlayer1) {
-        console.log("player1 placing bet.............");
+        console.log("player1 placing bet.............",JSON.stringify(data));
         socket.emit('signed-message-player-1', data)
     } else {
         console.log("player2 placing bet.............");
